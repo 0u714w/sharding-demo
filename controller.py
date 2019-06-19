@@ -1,4 +1,5 @@
 import os, json
+from shutil import copyfile
 
 filename = "chapter2.txt"
 
@@ -127,7 +128,15 @@ class ShardHandler(object):
         to detect how many levels there are and appropriately add the next
         level.
         """
-        pass
+        files = os.listdir("data")
+        # print(files)
+        quantity_of_rep = len(files)
+        # print(quantity_of_rep)
+        for num in range(0, quantity_of_rep):
+            for z in self.mapping.keys():
+                source = f"data/{z}.txt"
+                copy = f"data/{z}-{str(num + 1)}.txt"
+                copyfile(source, copy)
 
     def remove_replication(self):
         """Remove the highest replication level.
@@ -177,11 +186,13 @@ s = ShardHandler()
 s.build_shards(5, load_data_from_file())
 
 print(s.mapping.keys())
-
-s.add_shard()
+#
+# s.add_shard()
+#
+print(s.mapping.keys())
+#
+# s.remove_shard()
 
 print(s.mapping.keys())
 
-s.remove_shard()
-
-print(s.mapping.keys())
+s.add_replication()
