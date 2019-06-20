@@ -8,6 +8,15 @@ def load_data_from_file(path=None):
         data = f.read()
     return data
 
+def find_number_of_reps():
+    files = os.listdir("data")
+    numbers = []
+    for item in files:
+        numbers.append(item[0])
+
+    rep_num = max(numbers)
+    return rep_num
+
 class ShardHandler(object):
     """
     Take any text file and shard it into X number of files with
@@ -128,11 +137,9 @@ class ShardHandler(object):
         to detect how many levels there are and appropriately add the next
         level.
         """
-        files = os.listdir("data")
-        # print(files)
-        quantity_of_rep = len(files)
-        # print(quantity_of_rep)
-        for num in range(0, quantity_of_rep):
+        quantity_of_rep = find_number_of_reps()
+        print(quantity_of_rep)
+        for num in range(0, int(quantity_of_rep)):
             for z in self.mapping.keys():
                 source = f"data/{z}.txt"
                 copy = f"data/{z}-{str(num + 1)}.txt"
@@ -159,7 +166,16 @@ class ShardHandler(object):
         2.txt (shard 2, primary)
         etc...
         """
-        pass
+        quantity_of_rep = find_number_of_reps()
+        try:
+            for item in self.mapping.keys():
+                os.remove(f"data/{item}-{str(quantity_of_rep)}.txt")
+        except Exception:
+            ("Cannot remove any more replications")
+
+
+
+
 
     def sync_replication(self):
         """Verify that all replications are equal to their primaries and that
@@ -186,13 +202,16 @@ s = ShardHandler()
 s.build_shards(5, load_data_from_file())
 
 print(s.mapping.keys())
+
+# find_number_of_reps()
 #
 # s.add_shard()
 #
-print(s.mapping.keys())
+# print(s.mapping.keys())
 #
 # s.remove_shard()
 
-print(s.mapping.keys())
+# print(s.mapping.keys())
 
-s.add_replication()
+# s.add_replication()
+s.remove_replication()
